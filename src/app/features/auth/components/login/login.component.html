@@ -1,0 +1,61 @@
+<div class="container py-5">
+  <div class="row justify-content-center align-items-center min-vh-100">
+    <div class="col-12 col-md-8 col-lg-5">
+      <div class="card border-0">
+        <div class="card-body p-4 p-lg-5">
+          <span class="badge rounded-pill text-bg-warning mb-3">Task Manager</span>
+          <h1 class="h2 mb-2">Accede a tu espacio de trabajo</h1>
+          <p class="text-muted mb-4">
+            Login fake para arrancar el proyecto con una base realista.
+          </p>
+
+          <form [formGroup]="loginForm" (ngSubmit)="submit()" novalidate>
+            <div class="mb-3">
+              <label class="form-label" for="username">Usuario</label>
+              <input
+                id="username"
+                type="text"
+                class="form-control"
+                formControlName="username"
+                placeholder="demo"
+              />
+              <div
+                class="text-danger small mt-1"
+                *ngIf="loginForm.controls.username.touched && loginForm.controls.username.invalid"
+              >
+                El usuario es obligatorio y debe tener al menos 3 caracteres.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="password">Contrasena</label>
+              <input
+                id="password"
+                type="password"
+                class="form-control"
+                formControlName="password"
+                placeholder="123456"
+              />
+              <div
+                class="text-danger small mt-1"
+                *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid"
+              >
+                La contrasena es obligatoria y debe tener al menos 6 caracteres.
+              </div>
+            </div>
+
+            <div class="alert alert-danger py-2" *ngIf="loginError">{{ loginError }}</div>
+
+            <button class="btn btn-primary w-100" type="submit" [disabled]="isSubmitting">
+              {{ isSubmitting ? 'Entrando...' : 'Iniciar sesion' }}
+            </button>
+          </form>
+
+          <div class="mt-4 small text-muted">
+            Credenciales demo: <strong>demo</strong> / <strong>123456</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

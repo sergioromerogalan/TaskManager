@@ -1,0 +1,46 @@
+@use 'bootstrap/scss/bootstrap';
+
+:root {
+  --tm-bg: #f4f7fb;
+  --tm-surface: #ffffff;
+  --tm-primary: #0f766e;
+  --tm-primary-dark: #115e59;
+  --tm-accent: #f59e0b;
+  --tm-text: #0f172a;
+  --tm-muted: #64748b;
+  --tm-border: #dbe3ef;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(15, 118, 110, 0.08), transparent 30%),
+    linear-gradient(180deg, #f8fbfd 0%, var(--tm-bg) 100%);
+  color: var(--tm-text);
+}
+
+.card {
+  border-color: var(--tm-border);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
+}
+
+.btn-primary {
+  background-color: var(--tm-primary);
+  border-color: var(--tm-primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--tm-primary-dark);
+  border-color: var(--tm-primary-dark);
+}
+
+.text-muted {
+  color: var(--tm-muted) !important;
+}

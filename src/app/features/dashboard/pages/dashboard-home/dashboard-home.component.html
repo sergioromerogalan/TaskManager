@@ -1,0 +1,50 @@
+<div class="container py-4">
+  <app-page-header
+    title="Dashboard"
+    subtitle="Resumen general del estado de tus tareas"
+  >
+    <div class="d-flex gap-2">
+      <a routerLink="/tasks" class="btn btn-primary">Ir a tareas</a>
+      <a routerLink="/auth/login" class="btn btn-outline-secondary" (click)="logout()">
+        Cerrar sesion
+      </a>
+    </div>
+  </app-page-header>
+
+  <div class="row g-4" *ngIf="stats$ | async as stats">
+    <div class="col-12 col-md-4">
+      <div class="card h-100 border-0">
+        <div class="card-body">
+          <p class="text-muted mb-2">Tareas totales</p>
+          <h2 class="display-6 mb-0">{{ stats.total }}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="card h-100 border-0">
+        <div class="card-body">
+          <p class="text-muted mb-2">Pendientes</p>
+          <h2 class="display-6 mb-0 text-warning">{{ stats.pending }}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="card h-100 border-0">
+        <div class="card-body">
+          <p class="text-muted mb-2">Completadas</p>
+          <h2 class="display-6 mb-0 text-success">{{ stats.completed }}</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 mt-4">
+    <div class="card-body">
+      <h3 class="h5 mb-3">Bienvenido{{ session?.name ? ', ' + session?.name : '' }}</h3>
+      <p class="mb-0 text-muted">
+        Esta pantalla sirve como punto de entrada para futuras metricas, widgets o accesos
+        rapidos. La base ya esta conectada al estado del modulo de tareas.
+      </p>
+    </div>
+  </div>
+</div>
