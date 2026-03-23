@@ -35,6 +35,10 @@ export class TaskFormComponent implements OnChanges {
     completed: [false],
   });
 
+  get isEditMode(): boolean {
+    return Boolean(this.task);
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['task']) {
       this.taskForm.reset({

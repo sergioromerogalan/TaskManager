@@ -4,6 +4,9 @@
     subtitle="CRUD local con estado simple basado en BehaviorSubject"
   >
     <div class="d-flex gap-2">
+      <button type="button" class="btn btn-primary" (click)="goToCreateTask()">
+        Nueva tarea
+      </button>
       <a routerLink="/dashboard" class="btn btn-outline-secondary">Dashboard</a>
       <a routerLink="/auth/login" class="btn btn-outline-danger" (click)="logout()">
         Cerrar sesion
@@ -11,105 +14,93 @@
     </div>
   </app-page-header>
 
-  <div class="row g-4">
-    <div class="col-12 col-xl-4">
-      <app-task-form
-        [task]="selectedTask"
-        (saveTask)="onSaveTask($event)"
-        (cancelEdit)="onCancelEdit()"
-      ></app-task-form>
-    </div>
+  <div class="card border-0">
+    <div class="card-body">
+      <div
+        class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4"
+      >
+        <h2 class="h5 mb-0">Listado de tareas</h2>
 
-    <div class="col-12 col-xl-8">
-      <div class="card border-0">
-        <div class="card-body">
-          <div
-            class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4"
+        <div class="btn-group" role="group" aria-label="Task filters">
+          <button
+            type="button"
+            class="btn"
+            [class.btn-primary]="(activeFilter$ | async) === 'all'"
+            [class.btn-outline-secondary]="(activeFilter$ | async) !== 'all'"
+            (click)="setFilter('all')"
           >
-            <h2 class="h5 mb-0">Listado de tareas</h2>
-
-            <div class="btn-group" role="group" aria-label="Task filters">
-              <button
-                type="button"
-                class="btn"
-                [class.btn-primary]="(activeFilter$ | async) === 'all'"
-                [class.btn-outline-secondary]="(activeFilter$ | async) !== 'all'"
-                (click)="setFilter('all')"
-              >
-                Todas
-              </button>
-              <button
-                type="button"
-                class="btn"
-                [class.btn-primary]="(activeFilter$ | async) === 'pending'"
-                [class.btn-outline-secondary]="(activeFilter$ | async) !== 'pending'"
-                (click)="setFilter('pending')"
-              >
-                Pendientes
-              </button>
-              <button
-                type="button"
-                class="btn"
-                [class.btn-primary]="(activeFilter$ | async) === 'completed'"
-                [class.btn-outline-secondary]="(activeFilter$ | async) !== 'completed'"
-                (click)="setFilter('completed')"
-              >
-                Completadas
-              </button>
-            </div>
-          </div>
-
-          <div *ngIf="vm$ | async as vm">
-            <div *ngIf="vm.tasks.length; else emptyState" class="vstack gap-3">
-              <article class="task-item" *ngFor="let task of vm.tasks; trackBy: trackByTaskId">
-                <div class="d-flex flex-column flex-lg-row justify-content-between gap-3">
-                  <div>
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                      <h3 class="h6 mb-0">{{ task.title }}</h3>
-                      <span
-                        class="badge"
-                        [class.text-bg-success]="task.completed"
-                        [class.text-bg-warning]="!task.completed"
-                      >
-                        {{ task.completed | taskStatus }}
-                      </span>
-                    </div>
-                    <p class="text-muted mb-2">{{ task.description }}</p>
-                    <small class="text-muted">
-                      Actualizada: {{ task.updatedAt | date: 'short' }}
-                    </small>
-                  </div>
-
-                  <div class="d-flex gap-2">
-                    <button
-                      class="btn btn-sm btn-outline-primary"
-                      type="button"
-                      (click)="onEditTask(task)"
-                    >
-                      Editar
-                    </button>
-                    <button
-                      class="btn btn-sm btn-outline-danger"
-                      type="button"
-                      (click)="onDeleteTask(task.id)"
-                    >
-                      Eliminar
-                    </button>
-                  </div>
-                </div>
-              </article>
-            </div>
-
-            <ng-template #emptyState>
-              <div class="text-center py-5">
-                <h3 class="h6">No hay tareas para este filtro</h3>
-                <p class="text-muted mb-0">
-                  Crea una nueva tarea o cambia el filtro para ver mas resultados.
-                </p>
-              </div>
-            </ng-template>
-          </div>
+            Todas
+          </button>
+          <button
+            type="button"
+            class="btn"
+            [class.btn-primary]="(activeFilter$ | async) === 'pending'"
+            [class.btn-outline-secondary]="(activeFilter$ | async) !== 'pending'"
+            (click)="setFilter('pending')"
+          >
+            Pendientes
+          </button>
+          <button
+            type="button"
+            class="btn"
+            [class.btn-primary]="(activeFilter$ | async) === 'completed'"
+            [class.btn-outline-secondary]="(activeFilter$ | async) !== 'completed'"
+            (click)="setFilter('completed')"
+          >
+            Completadas
+          </button>
         </div>
+      </div>
+
+      <div *ngIf="vm$ | async as vm">
+        <div *ngIf="vm.tasks.length; else emptyState" class="vstack gap-3">
+          <article class="task-item" *ngFor="let task of vm.tasks; trackBy: trackByTaskId">
+            <div class="d-flex flex-column flex-lg-row justify-content-between gap-3">
+              <div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <h3 class="h6 mb-0">{{ task.title }}</h3>
+                  <span
+                    class="badge"
+                    [class.text-bg-success]="task.completed"
+                    [class.text-bg-warning]="!task.completed"
+                  >
+                    {{ task.completed | taskStatus }}
+                  </span>
+                </div>
+                <p class="text-muted mb-2">{{ task.description }}</p>
+                <small class="text-muted">
+                  Actualizada: {{ task.updatedAt | date: 'short' }}
+                </small>
+              </div>
+
+              <div class="d-flex gap-2">
+                <button
+                  class="btn btn-sm btn-outline-primary"
+                  type="button"
+                  (click)="onEditTask(task)"
+                >
+                  Editar
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  type="button"
+                  (click)="onDeleteTask(task.id)"
+                >
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <ng-template #emptyState>
+          <div class="text-center py-5">
+            <h3 class="h6">No hay tareas para este filtro</h3>
+            <p class="text-muted mb-0">
+              Crea una nueva tarea o cambia el filtro para ver mas resultados.
+            </p>
+          </div>
+        </ng-template>
       </div>
     </div>
   </div>

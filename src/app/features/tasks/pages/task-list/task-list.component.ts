@@ -1,9 +1,8 @@
 import { Component, inject } from '@angular/core';
-import { BehaviorSubject, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { BehaviorSubject, map, switchMap } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth.service';
 import { TaskService } from '../../../../core/services/task.service';
-import { TaskFormValue } from '../../components/task-form/task-form.component';
 import { Task, TaskFilter } from '../../models/task.model';
 
 @Component({
@@ -15,50 +14,36 @@ import { Task, TaskFilter } from '../../models/task.model';
 export class TaskListComponent {
   private readonly authService = inject(AuthService);
   private readonly taskService = inject(TaskService);
+  private readonly router = inject(Router);
 
   private readonly filterSubject = new BehaviorSubject<TaskFilter>('all');
 
-  selectedTask: Task | null = null;
   readonly activeFilter$ = this.filterSubject.asObservable();
-
-  readonly vm$ = combineLatest([
-    this.taskService.getTasks(),
-    this.activeFilter$,
-  ]).pipe(
-    map(([tasks, filter]) => ({
-      filter,
-      tasks: this.applyFilter(tasks, filter),
-    })),
+  readonly vm$ = this.activeFilter$.pipe(
+    switchMap((filter) =>
+      this.taskService.getFilteredTasks$(filter).pipe(
+        map((tasks) => ({
+          filter,
+          tasks,
+        })),
+      ),
+    ),
   );
 
   setFilter(filter: TaskFilter): void {
     this.filterSubject.next(filter);
   }
 
-  onSaveTask(taskFormValue: TaskFormValue): void {
-    if (this.selectedTask) {
-      this.taskService.updateTask(this.selectedTask.id, taskFormValue);
-      this.selectedTask = null;
-      return;
-    }
-
-    this.taskService.createTask(taskFormValue);
+  goToCreateTask(): void {
+    void this.router.navigate(['/tasks/new']);
   }
 
   onEditTask(task: Task): void {
-    this.selectedTask = task;
+    void this.router.navigate(['/tasks', task.id]);
   }
 
   onDeleteTask(taskId: number): void {
     this.taskService.deleteTask(taskId);
-
-    if (this.selectedTask?.id === taskId) {
-      this.selectedTask = null;
-    }
-  }
-
-  onCancelEdit(): void {
-    this.selectedTask = null;
   }
 
   logout(): void {
@@ -67,16 +52,5 @@ export class TaskListComponent {
 
   trackByTaskId(_: number, task: Task): number {
     return task.id;
-  }
-
-  private applyFilter(tasks: Task[], filter: TaskFilter): Task[] {
-    switch (filter) {
-      case 'completed':
-        return tasks.filter((task) => task.completed);
-      case 'pending':
-        return tasks.filter((task) => !task.completed);
-      default:
-        return tasks;
-    }
   }
 }

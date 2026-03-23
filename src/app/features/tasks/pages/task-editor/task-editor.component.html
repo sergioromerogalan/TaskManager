@@ -1,0 +1,42 @@
+<div class="container py-4">
+  <app-page-header
+    [title]="isEditMode ? 'Editar tarea' : 'Nueva tarea'"
+    [subtitle]="
+      isEditMode
+        ? 'Actualiza los datos de la tarea seleccionada'
+        : 'Crea una nueva tarea con validaciones reactivas'
+    "
+  >
+    <a routerLink="/tasks" class="btn btn-outline-secondary">Volver al listado</a>
+  </app-page-header>
+
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <ng-container *ngIf="task$ | async as task; else createMode">
+        <app-task-form
+          [task]="task"
+          (saveTask)="onSave($event)"
+          (cancelEdit)="onCancel()"
+        ></app-task-form>
+      </ng-container>
+
+      <ng-template #createMode>
+        <ng-container *ngIf="!isEditMode; else notFoundState">
+          <app-task-form (saveTask)="onSave($event)"></app-task-form>
+        </ng-container>
+      </ng-template>
+
+      <ng-template #notFoundState>
+        <div class="card border-0">
+          <div class="card-body text-center py-5">
+            <h2 class="h5">La tarea no existe</h2>
+            <p class="text-muted mb-3">
+              Revisa el identificador o vuelve al listado para seleccionar otra tarea.
+            </p>
+            <a routerLink="/tasks" class="btn btn-primary">Ir al listado</a>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

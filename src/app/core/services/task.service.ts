@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { Task, TaskFilter } from '../../features/tasks/models/task.model';
 
 const TASKS_STORAGE_KEY = 'tm_tasks';
@@ -35,8 +35,10 @@ export class TaskService {
     return this.tasks$;
   }
 
-  getTaskById(taskId: number): Task | undefined {
-    return this.tasksSubject.value.find((task) => task.id === taskId);
+  getTaskById$(taskId: number): Observable<Task | undefined> {
+    return this.tasks$.pipe(
+      map((tasks) => tasks.find((task) => task.id === taskId)),
+    );
   }
 
   createTask(task: Pick<Task, 'title' | 'description' | 'completed'>): void {
@@ -68,15 +70,19 @@ export class TaskService {
     this.updateState(this.tasksSubject.value.filter((task) => task.id !== taskId));
   }
 
-  getFilteredTasks(filter: TaskFilter): Task[] {
-    switch (filter) {
-      case 'completed':
-        return this.tasksSubject.value.filter((task) => task.completed);
-      case 'pending':
-        return this.tasksSubject.value.filter((task) => !task.completed);
-      default:
-        return this.tasksSubject.value;
-    }
+  getFilteredTasks$(filter: TaskFilter): Observable<Task[]> {
+    return this.tasks$.pipe(
+      map((tasks) => {
+        switch (filter) {
+          case 'completed':
+            return tasks.filter((task) => task.completed);
+          case 'pending':
+            return tasks.filter((task) => !task.completed);
+          default:
+            return tasks;
+        }
+      }),
+    );
   }
 
   private loadTasks(): Task[] {

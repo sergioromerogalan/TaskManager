@@ -1,59 +1,107 @@
-# TaskManager
+# Task Manager
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.3.
+Aplicacion web tipo gestor de tareas desarrollada con Angular 21. El proyecto esta planteado como una base frontend profesional, con arquitectura modular, estado reactivo sencillo con RxJS y una estructura preparada para crecer por funcionalidades.
 
-## Development server
+## Demo
 
-To start a local development server, run:
+https://task-manager-swart-zeta-65.vercel.app/
 
-```bash
-ng serve
+## Repositorio
+
+https://github.com/sergioromerogalan/TaskManager
+
+## Caracteristicas
+
+- Login fake sin backend real
+- Dashboard inicial con resumen de tareas
+- CRUD completo de tareas
+- Filtros por estado: todas, completadas y pendientes
+- Formularios reactivos con validaciones
+- Estado reactivo con `BehaviorSubject`
+- Persistencia en `localStorage`
+- Routing con lazy loading
+- Guard de autenticacion e interceptor basico
+- Base de tests unitarios para servicio y componente
+
+## Stack
+
+- Angular 21
+- TypeScript
+- RxJS
+- SCSS
+- Bootstrap 5
+- Vitest
+
+## Arquitectura
+
+El proyecto sigue una estructura modular orientada a separacion de responsabilidades:
+
+```text
+src/app/
+├── core/        # servicios singleton, guards, interceptors, handlers
+├── shared/      # componentes reutilizables, pipes y modulos compartidos
+└── features/
+    ├── auth/        # login fake
+    ├── dashboard/   # vista inicial protegida
+    └── tasks/       # listado, alta y edicion de tareas
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### Criterios aplicados
 
-## Code scaffolding
+- La logica de negocio vive en servicios
+- Los modelos se definen con interfaces TypeScript
+- El estado simple se resuelve con `BehaviorSubject`
+- Los componentes consumen observables con `async pipe` siempre que es posible
+- Las features cargan por lazy loading para mantener una base escalable
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Modulo de tareas
 
-```bash
-ng generate component component-name
-```
+El modulo `tasks` incluye:
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- `/tasks`: listado de tareas con filtros y acciones
+- `/tasks/new`: creacion de tarea
+- `/tasks/:id`: edicion de tarea
 
-```bash
-ng generate --help
-```
+La persistencia actual es local y se gestiona desde `TaskService` usando la clave `tm_tasks` en `localStorage`.
 
-## Building
+## Scripts
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Desde la raiz del proyecto:
 
 ```bash
-ng test
+npm install
+npm start
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+Scripts disponibles:
 
 ```bash
-ng e2e
+npm start
+npm run build
+npm test
+npm test -- --watch=false
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+`npm start` levanta el servidor de desarrollo en `http://localhost:4200`.
 
-## Additional Resources
+## Testing
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Actualmente el proyecto incluye ejemplos basicos de test unitario:
+
+- Servicio: validacion del flujo CRUD reactivo de tareas
+- Componente: validacion del formulario de tareas
+
+Los tests se ejecutan con Vitest a traves de Angular:
+
+```bash
+npm test -- --watch=false
+```
+
+## Estado actual
+
+Esta base esta pensada como punto de partida realista para seguir evolucionando:
+
+- autenticacion fake reemplazable por backend real
+- capa de datos migrable a API REST o JSON Server
+- estructura preparada para nuevas features y mas cobertura de testing
+

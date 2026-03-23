@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { firstValueFrom } from 'rxjs';
 import { TaskService } from './task.service';
 
 describe('TaskService', () => {
@@ -11,8 +12,8 @@ describe('TaskService', () => {
     service = TestBed.inject(TaskService);
   });
 
-  it('should create, update and delete a task', () => {
-    const initialCount = service.getFilteredTasks('all').length;
+  it('should create, update and delete a task through its reactive API', async () => {
+    const initialCount = (await firstValueFrom(service.getTasks())).length;
 
     service.createTask({
       title: 'Nueva tarea',
@@ -20,15 +21,17 @@ describe('TaskService', () => {
       completed: false,
     });
 
-    const createdTask = service.getFilteredTasks('all')[0];
+    const createdTask = (await firstValueFrom(service.getFilteredTasks$('all')))[0];
 
-    expect(service.getFilteredTasks('all').length).toBe(initialCount + 1);
+    expect((await firstValueFrom(service.getTasks())).length).toBe(initialCount + 1);
     expect(createdTask.title).toBe('Nueva tarea');
 
     service.updateTask(createdTask.id, { completed: true });
-    expect(service.getTaskById(createdTask.id)?.completed).toBe(true);
+    expect((await firstValueFrom(service.getTaskById$(createdTask.id)))?.completed).toBe(
+      true,
+    );
 
     service.deleteTask(createdTask.id);
-    expect(service.getTaskById(createdTask.id)).toBeUndefined();
+    expect(await firstValueFrom(service.getTaskById$(createdTask.id))).toBeUndefined();
   });
 });

@@ -1,9 +1,9 @@
 <div class="card border-0 h-100">
   <div class="card-body">
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h2 class="h5 mb-0">{{ task ? 'Editar tarea' : 'Nueva tarea' }}</h2>
+      <h2 class="h5 mb-0">{{ isEditMode ? 'Editar tarea' : 'Nueva tarea' }}</h2>
       <button
-        *ngIf="task"
+        *ngIf="isEditMode"
         type="button"
         class="btn btn-sm btn-outline-secondary"
         (click)="cancelEdit.emit()"
@@ -51,7 +51,7 @@
       </div>
 
       <button class="btn btn-primary w-100" type="submit">
-        {{ task ? 'Guardar cambios' : 'Crear tarea' }}
+        {{ isEditMode ? 'Guardar cambios' : 'Crear tarea' }}
       </button>
     </form>
   </div>
